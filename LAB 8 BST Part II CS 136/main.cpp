@@ -319,15 +319,19 @@ BinarySearchTree::BinarySearchTree(const BinarySearchTree& otherTree) {
 void BinarySearchTree::Search(Node* p, string searchWord, bool& foundWord) {
     if (p != nullptr) {
         Search(p->leftLink, searchWord, foundWord);
+
         string tempWord = p->word;
         if (tempWord.find(searchWord) != std::string::npos) {
+
             if (!foundWord) {
                 cout << "Words containing \"" << searchWord << "\": \n" 
                     << setw(SETW_SIZE) << "WORD" << "COUNT" << "\n\n"; //cout header before printing first word to screen;
             }
+
             cout << setw(SETW_SIZE) << p->word << p->count << "\n";
             foundWord = true;
         }
+
         Search(p->rightLink, searchWord, foundWord);
     }
 
@@ -411,6 +415,7 @@ void BinarySearchTree::deleteFromTree(Node*& p) {
         }
 
         p->word = current->word;
+        p->count = current->count;
         if (trailCurrent == nullptr) {
             p->leftLink = current->leftLink;
         }
