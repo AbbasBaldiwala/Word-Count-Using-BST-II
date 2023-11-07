@@ -72,6 +72,8 @@ public:
     post: tree is destroyed*/
     ~BinarySearchTree() { Destroy(root); }
 
+    /*pre: string must be passed as a parameter
+    post: node is deleted from tree*/
     void deleteNode(const string& deleteItem);
 
 protected:
@@ -106,8 +108,12 @@ private:
     post: returns the larger of the two integers*/
     int Max(int x, int y) const;
 
+    /*pre: correct parameters must be passed
+    post: search results are printed to screen*/
     void Search(Node* p, string searchWord, bool& foundWord);
 
+    /*pre: pointer to Node must be a parameter
+    post: node is deleted from the tree*/
     void deleteFromTree(Node*& p);
 };
 
@@ -131,13 +137,13 @@ void ProcessInputFile(string FileName, string deleteWord);
 pre: the Binary search tree must exist and the header musht exist
 post: all the words will be printed to the screen
 */
-void BuildBST(BinarySearchTree& BST);
+void BuildBST(BinarySearchTree& BST, string fileName);
 
 /*
 pre:BST and header string must exist
 post: the BST gets filled with words and printed to screen
 */
-void BuildTree(BinarySearchTree& BST);
+void BuildTree(BinarySearchTree& BST, string fileName);
 
 /*
 pre: none
@@ -145,11 +151,17 @@ post: clears cin, clears the keyboard buffer, prints an error message
 */
 void ClearInvalidInput(string errMsg);
 
-/*pre: 
-post: */
+/*pre: none
+post: search results are printed*/
 void EnterSearchSubmenu(BinarySearchTree& BST);
 
+/*pre: none
+post: word is deleted form tree and input file*/
 void EnterDeleteWordSubmenu(BinarySearchTree& BST, string fileName);
+
+
+//MAIN
+
 
 int main()
 {
@@ -176,7 +188,7 @@ int main()
             ProcessInputFile(fileName, "");
             break;
         case BUILD_BST:
-            BuildTree(BST);
+            BuildTree(BST, fileName);
             break;
         case PRINT_BST:
             cout << header;
@@ -366,7 +378,6 @@ void BinarySearchTree::InsertWord(string insertWord) {
     }
 }
 
-
 void BinarySearchTree::deleteFromTree(Node*& p) {
     Node* current;
     Node* trailCurrent;
@@ -521,9 +532,9 @@ void ProcessInputFile(string FileName, string deleteWord) {
     ioFile.close();
 }
 
-void BuildBST(BinarySearchTree& BST) {
+void BuildBST(BinarySearchTree& BST, string fileName) {
     BST.DestroyTree();
-    ifstream inFile("Test_Data.txt");
+    ifstream inFile(fileName);
     if (!inFile) {
         cout << "Input file not found. Exiting the program." << endl;
         system("pause");
@@ -543,9 +554,10 @@ void BuildBST(BinarySearchTree& BST) {
     inFile.close();
 }
 
-void BuildTree(BinarySearchTree& BST) {
+void BuildTree(BinarySearchTree& BST, string fileName) {
     try {
-        BuildBST(BST);
+        BuildBST(BST, fileName);
+        cout << "BUILD SUCCESSFUL\n";
     }
     catch (const std::bad_alloc error) {
         std::cerr << "Exception caught, Could not allocate memory. Destroying Tree " << error.what() << "\n";
@@ -587,8 +599,11 @@ void EnterDeleteWordSubmenu(BinarySearchTree& BST, string fileName) {
 
 MENU:
 1. UPDATE INPUT FILE
-2. BUILD AND PRINT BST
-3. QUIT
+2. BUILD BST
+3. PRINT TREE
+4. SEARCH
+5. DELETE WORD
+6. QUIT
 
 1
 INPUT FILE UPDATED
@@ -596,10 +611,24 @@ INPUT FILE UPDATED
 
 MENU:
 1. UPDATE INPUT FILE
-2. BUILD AND PRINT BST
-3. QUIT
+2. BUILD BST
+3. PRINT TREE
+4. SEARCH
+5. DELETE WORD
+6. QUIT
 
 2
+
+
+MENU:
+1. UPDATE INPUT FILE
+2. BUILD BST
+3. PRINT TREE
+4. SEARCH
+5. DELETE WORD
+6. QUIT
+
+3
 WORD           COUNT
 
 about          1
@@ -676,69 +705,257 @@ voters         1
 
 MENU:
 1. UPDATE INPUT FILE
-2. BUILD AND PRINT BST
-3. QUIT
+2. BUILD BST
+3. PRINT TREE
+4. SEARCH
+5. DELETE WORD
+6. QUIT
 
-3
+4
+Enter a word to search by: be
 
-QUITTING...
-*/
+Words containing "be":
+WORD           COUNT
 
-//TEST 2
-/*
-
-MENU:
-1. UPDATE INPUT FILE
-2. BUILD AND PRINT BST
-3. QUIT
-
-dsfa
-
-INVALID MENU SELECTION
+because        4
+become         1
+believe        1
+members        2
 
 
 MENU:
 1. UPDATE INPUT FILE
-2. BUILD AND PRINT BST
-3. QUIT
+2. BUILD BST
+3. PRINT TREE
+4. SEARCH
+5. DELETE WORD
+6. QUIT
 
 5
+Enter a word you want to delete: their
 
-INVALID MENU SELECTION
+INPUT FILE UPDATED
+"their" was deleted from the tree
 
 
 MENU:
 1. UPDATE INPUT FILE
-2. BUILD AND PRINT BST
-3. QUIT
+2. BUILD BST
+3. PRINT TREE
+4. SEARCH
+5. DELETE WORD
+6. QUIT
 
 3
+WORD           COUNT
+
+about          1
+accurately     2
+actually       1
+addition       1
+agenda         1
+agree          2
+almost         1
+always         1
+anything       1
+basically      1
+because        4
+become         1
+believe        1
+close          1
+congress       6
+democrat       1
+democrats      2
+different      2
+divided        1
+division       1
+either         3
+everyone       1
+falcon         1
+fewer          1
+focused        1
+forced         1
+fully          1
+going          1
+hinders        1
+ideas          2
+impact         1
+increase       1
+instead        1
+major          1
+members        2
+might          1
+other          2
+parties        2
+partisan       1
+partisanship   1
+party          2
+passed         1
+passing        1
+people         4
+population     1
+power          1
+problems       1
+professor      1
+progress       1
+rather         1
+reality        1
+represent      4
+representing   1
+republican     1
+republicans    2
+should         1
+showing        1
+sides          2
+siding         1
+solving        1
+split          1
+states         2
+stopping       1
+supposed       2
+umbrella       1
+under          1
+united         1
+voted          2
+voters         1
+
+
+MENU:
+1. UPDATE INPUT FILE
+2. BUILD BST
+3. PRINT TREE
+4. SEARCH
+5. DELETE WORD
+6. QUIT
+
+6
 
 QUITTING...
-
 */
 
-//TEST 3 (empty input file)
+//Test 2 (empty input file)
 /*
 MENU:
 1. UPDATE INPUT FILE
-2. BUILD AND PRINT BST
-3. QUIT
+2. BUILD BST
+3. PRINT TREE
+4. SEARCH
+5. DELETE WORD
+6. QUIT
 
 1
 The input file is empty. Quitting the program.
 Press any key to continue . . .
+
 */
 
-//TEST 4 (no input file found)
+//Test 3 (input file not found)
 /*
-
 MENU:
 1. UPDATE INPUT FILE
-2. BUILD AND PRINT BST
-3. QUIT
+2. BUILD BST
+3. PRINT TREE
+4. SEARCH
+5. DELETE WORD
+6. QUIT
 
 1
 Input file not found. Exiting the program.
 Press any key to continue . . .
+
+*/
+
+//Test 4 (no search results)
+/*
+
+MENU:
+1. UPDATE INPUT FILE
+2. BUILD BST
+3. PRINT TREE
+4. SEARCH
+5. DELETE WORD
+6. QUIT
+
+2
+
+
+MENU:
+1. UPDATE INPUT FILE
+2. BUILD BST
+3. PRINT TREE
+4. SEARCH
+5. DELETE WORD
+6. QUIT
+
+4
+Enter a word to search by: asdf
+
+No words containing the string "asdf" found.
+
+
+MENU:
+1. UPDATE INPUT FILE
+2. BUILD BST
+3. PRINT TREE
+4. SEARCH
+5. DELETE WORD
+6. QUIT
+
+6
+
+QUITTING...
+
+*/
+
+//Test 5 (word to be deleted not found)
+/*
+MENU:
+1. UPDATE INPUT FILE
+2. BUILD BST
+3. PRINT TREE
+4. SEARCH
+5. DELETE WORD
+6. QUIT
+
+2
+
+
+MENU:
+1. UPDATE INPUT FILE
+2. BUILD BST
+3. PRINT TREE
+4. SEARCH
+5. DELETE WORD
+6. QUIT
+
+5
+Enter a word you want to delete: asdf
+
+INPUT FILE UPDATED
+The word you are trying to delete is not in the tree.
+
+
+MENU:
+1. UPDATE INPUT FILE
+2. BUILD BST
+3. PRINT TREE
+4. SEARCH
+5. DELETE WORD
+6. QUIT
+
+6
+
+QUITTING...
+*/
+
+//Test 6 (replaced letters of word with '!')
+/*
+  agree      professor falcon     believe      congress     become     partisan because            focused    democrats     republicans rather      actually solving  problems
+    impact         increase    partisanship         fewer          passed because         sides              stopping       other
+    addition congress members         supposed    represent     population    people     voted                      siding      either party     going      !!!!!  agenda
+     hinders progress because    congress    split close                     sides               !!!!! power             other           passing anything                 fully agree
+congress    supposed    represent     people        united  states                      representing either republicans     democrats
+     showing                different states        represent     voters accurately because               everyone under     umbrella    either republican    democrat          reality people might      different  ideas
+congress     almost always      divided          major  parties         division should    about ideas instead     parties
+     members    congress     basically forced              !!!!!  party              accurately represent     people     voted
 */
