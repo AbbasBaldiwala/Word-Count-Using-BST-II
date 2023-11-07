@@ -157,7 +157,7 @@ void EnterSearchSubmenu(BinarySearchTree& BST);
 
 /*pre: none
 post: word is deleted form tree and input file*/
-void EnterDeleteWordSubmenu(BinarySearchTree& BST, string fileName);
+void DeleteWordWrapper(BinarySearchTree& BST, string fileName);
 
 
 //MAIN
@@ -198,7 +198,7 @@ int main()
             EnterSearchSubmenu(BST);
             break;
         case DELETE_WORD:
-            EnterDeleteWordSubmenu(BST, fileName);
+            DeleteWordWrapper(BST, fileName);
             break;
         case QUIT:
             cout << "\nQUITTING..." << endl;
@@ -214,6 +214,7 @@ int main()
 
 //BST METHODS
 
+//LAB 7 METHODS
 
 void BinarySearchTree::Inorder(Node* p) const {
     if (p != nullptr) {
@@ -316,27 +317,6 @@ BinarySearchTree::BinarySearchTree(const BinarySearchTree& otherTree) {
     }
 }
 
-void BinarySearchTree::Search(Node* p, string searchWord, bool& foundWord) {
-    if (p != nullptr) {
-        Search(p->leftLink, searchWord, foundWord);
-
-        string tempWord = p->word;
-        if (tempWord.find(searchWord) != std::string::npos) {
-
-            if (!foundWord) {
-                cout << "Words containing \"" << searchWord << "\": \n" 
-                    << setw(SETW_SIZE) << "WORD" << "COUNT" << "\n\n"; //cout header before printing first word to screen;
-            }
-
-            cout << setw(SETW_SIZE) << p->word << p->count << "\n";
-            foundWord = true;
-        }
-
-        Search(p->rightLink, searchWord, foundWord);
-    }
-
-}
-
 void BinarySearchTree::InsertWord(string insertWord) {
 
     Node* current = nullptr;
@@ -380,6 +360,29 @@ void BinarySearchTree::InsertWord(string insertWord) {
             }
         }
     }
+}
+
+//LAB 8 METHODS
+
+void BinarySearchTree::Search(Node* p, string searchWord, bool& foundWord) {
+    if (p != nullptr) {
+        Search(p->leftLink, searchWord, foundWord);
+
+        string tempWord = p->word;
+        if (tempWord.find(searchWord) != std::string::npos) {
+
+            if (!foundWord) {
+                cout << "Words containing \"" << searchWord << "\": \n"
+                    << setw(SETW_SIZE) << "WORD" << "COUNT" << "\n\n"; //cout header before printing first word to screen;
+            }
+
+            cout << setw(SETW_SIZE) << p->word << p->count << "\n";
+            foundWord = true;
+        }
+
+        Search(p->rightLink, searchWord, foundWord);
+    }
+
 }
 
 void BinarySearchTree::deleteFromTree(Node*& p) {
@@ -503,6 +506,7 @@ string ToLower(string str) {
 void ProcessInputFile(string FileName, string deleteWord) {
     std::fstream ioFile{ FileName, std::ios::in | std::ios::out };
 
+    bool deleteWordFound = false;
     if (!ioFile) {
         cout << "Input file not found. Exiting the program." << endl;
         system("pause");
@@ -523,6 +527,7 @@ void ProcessInputFile(string FileName, string deleteWord) {
         word = ProcessWord(word);
 
         if (deleteWord == word && deleteWord != "") {
+            deleteWordFound = true;
             fillSpace << setfill('!') << setw(originalLen) << "";
         }
         else {
@@ -533,7 +538,12 @@ void ProcessInputFile(string FileName, string deleteWord) {
         ioFile << fillSpace.str();
         ioFile.seekg(ioFile.tellg(), std::ios::beg);
     }
-    cout << "INPUT FILE UPDATED\n";
+    if (deleteWordFound) {
+        cout << "\"" << deleteWord << "\"" << " deleted from the input file\n";
+    }
+    else if (deleteWord == "") {
+        cout << "INPUT FILE UPDATED\n";
+    }
     ioFile.close();
 }
 
@@ -589,7 +599,7 @@ void EnterSearchSubmenu(BinarySearchTree& BST) {
     }
 }
 
-void EnterDeleteWordSubmenu(BinarySearchTree& BST, string fileName) {
+void DeleteWordWrapper(BinarySearchTree& BST, string fileName) {
     string wordToDelete;
     cout << "Enter a word you want to delete: ";
     cin >> wordToDelete;
@@ -623,6 +633,7 @@ MENU:
 6. QUIT
 
 2
+BUILD SUCCESSFUL
 
 
 MENU:
@@ -882,6 +893,7 @@ MENU:
 6. QUIT
 
 2
+BUILD SUCCESSFUL
 
 
 MENU:
@@ -923,6 +935,7 @@ MENU:
 6. QUIT
 
 2
+BUILD SUCCESSFUL
 
 
 MENU:
@@ -934,9 +947,8 @@ MENU:
 6. QUIT
 
 5
-Enter a word you want to delete: asdf
+Enter a word you want to delete: dsafd
 
-INPUT FILE UPDATED
 The word you are trying to delete is not in the tree.
 
 
