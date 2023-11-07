@@ -74,7 +74,7 @@ public:
 
     /*pre: string must be passed as a parameter
     post: node is deleted from tree*/
-    void deleteNode(const string& deleteItem);
+    void deleteNode(const string& deleteItem, bool& found);
 
 protected:
     Node* root = nullptr;
@@ -429,10 +429,10 @@ void BinarySearchTree::deleteFromTree(Node*& p) {
     }
 }
 
-void BinarySearchTree::deleteNode(const string& deleteItem) {
+void BinarySearchTree::deleteNode(const string& deleteItem, bool& found) {
         Node* current;
         Node* trailCurrent;
-        bool found = false;
+        //bool found = false;
         if (root == nullptr)
             cout << "Cannot delete from an empty tree.\n";
         else {
@@ -506,7 +506,6 @@ string ToLower(string str) {
 void ProcessInputFile(string FileName, string deleteWord) {
     std::fstream ioFile{ FileName, std::ios::in | std::ios::out };
 
-    bool deleteWordFound = false;
     if (!ioFile) {
         cout << "Input file not found. Exiting the program." << endl;
         system("pause");
@@ -527,7 +526,6 @@ void ProcessInputFile(string FileName, string deleteWord) {
         word = ProcessWord(word);
 
         if (deleteWord == word && deleteWord != "") {
-            deleteWordFound = true;
             fillSpace << setfill('!') << setw(originalLen) << "";
         }
         else {
@@ -538,12 +536,7 @@ void ProcessInputFile(string FileName, string deleteWord) {
         ioFile << fillSpace.str();
         ioFile.seekg(ioFile.tellg(), std::ios::beg);
     }
-    if (deleteWordFound) {
-        cout << "\"" << deleteWord << "\"" << " deleted from the input file\n";
-    }
-    else if (deleteWord == "") {
-        cout << "INPUT FILE UPDATED\n";
-    }
+    cout << "INPUT FILE UPDATED\n";
     ioFile.close();
 }
 
@@ -601,11 +594,16 @@ void EnterSearchSubmenu(BinarySearchTree& BST) {
 
 void DeleteWordWrapper(BinarySearchTree& BST, string fileName) {
     string wordToDelete;
+    bool wordFound = false;
     cout << "Enter a word you want to delete: ";
     cin >> wordToDelete;
     cout << "\n";
-    ProcessInputFile(fileName, wordToDelete);
-    BST.deleteNode(wordToDelete);
+
+    BST.deleteNode(wordToDelete, wordFound);
+    if (wordFound) {
+        ProcessInputFile(fileName, wordToDelete);
+    }
+    
 }
 
 
