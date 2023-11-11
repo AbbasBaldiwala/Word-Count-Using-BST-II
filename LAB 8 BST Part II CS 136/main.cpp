@@ -131,7 +131,7 @@ string ProcessWord(string str);
 pre: file name must exist and be properly declared
 post: file will not include any puntuation and all words 4 characters or less are removed
 */
-void ProcessInputFile(string FileName, string deleteWord);
+void ProcessInputFile(string FileName);
 
 /*
 pre: the Binary search tree must exist and the header musht exist
@@ -159,6 +159,8 @@ void EnterSearchSubmenu(BinarySearchTree& BST);
 post: word is deleted form tree and input file*/
 void DeleteWordWrapper(BinarySearchTree& BST, string fileName);
 
+void DeleteWordFromFile(string fileName, string wordToDelete);
+
 
 //MAIN
 
@@ -185,7 +187,7 @@ int main()
 
         switch (userChoice) {
         case UPDATE_INPUT_FILE:
-            ProcessInputFile(fileName, "");
+            ProcessInputFile(fileName);
             break;
         case BUILD_BST:
             BuildTree(BST, fileName);
@@ -503,7 +505,7 @@ string ToLower(string str) {
     return lowerCaseStr;
 }
 
-void ProcessInputFile(string FileName, string deleteWord) {
+void ProcessInputFile(string FileName) {
     std::fstream ioFile{ FileName, std::ios::in | std::ios::out };
 
     if (!ioFile) {
@@ -525,12 +527,7 @@ void ProcessInputFile(string FileName, string deleteWord) {
         word = ToLower(word);
         word = ProcessWord(word);
 
-        if (deleteWord == word && deleteWord != "") {
-            fillSpace << setfill('!') << setw(originalLen) << "";
-        }
-        else {
-            fillSpace << setw(originalLen) << word;
-        }
+        fillSpace << setw(originalLen) << word;
 
         ioFile.seekg(-1 * originalLen, std::ios::cur);
         ioFile << fillSpace.str();
@@ -538,6 +535,42 @@ void ProcessInputFile(string FileName, string deleteWord) {
     }
     cout << "INPUT FILE UPDATED\n";
     ioFile.close();
+}
+
+
+void DeleteWordFromFile(string fileName, string wordToDelete) {
+
+    std::fstream ioFile{ fileName, std::ios::in | std::ios::out };
+
+    if (!ioFile) {
+        cout << "Input file not found. Exiting the program." << endl;
+        system("pause");
+        exit(EXIT_FAILURE);
+    }
+    if (ioFile.peek() == EOF) {
+        cout << "The input file is empty. Quitting the program." << endl;
+        ioFile.close();
+        system("pause");
+        exit(EXIT_FAILURE);
+    }
+
+    string word;
+    while (ioFile >> word) {
+        stringstream fillSpace("");
+        int originalLen = word.length();
+        if (wordToDelete == word) {
+            fillSpace << setfill('!') << setw(originalLen) << "";
+        }
+        else {
+            fillSpace << word;
+        }
+        ioFile.seekg(-1 * originalLen, std::ios::cur);
+        ioFile << fillSpace.str();
+        ioFile.seekg(ioFile.tellg(), std::ios::beg);
+    }
+    cout << "\nWORD DELETED FROM INPUT FILE\n";
+    ioFile.close();
+
 }
 
 void BuildBST(BinarySearchTree& BST, string fileName) {
@@ -601,7 +634,7 @@ void DeleteWordWrapper(BinarySearchTree& BST, string fileName) {
 
     BST.deleteNode(wordToDelete, wordFound);
     if (wordFound) {
-        ProcessInputFile(fileName, wordToDelete);
+        DeleteWordFromFile(fileName, wordToDelete);
     }
     
 }
