@@ -156,9 +156,12 @@ post: search results are printed*/
 void EnterSearchSubmenu(BinarySearchTree& BST);
 
 /*pre: none
-post: word is deleted form tree and input file*/
+post: word is deleted from tree and input file*/
+//Deletes exact match
 void DeleteWordWrapper(BinarySearchTree& BST, string fileName);
 
+/*pre: word exists in file
+post: word is replaced with exclamation marks*/
 void DeleteWordFromFile(string fileName, string wordToDelete);
 
 
@@ -193,7 +196,6 @@ int main()
             BuildTree(BST, fileName);
             break;
         case PRINT_BST:
-            cout << header;
             BST.TraverseInorder();
             break;
         case SEARCH_BST:
@@ -219,6 +221,14 @@ int main()
 //LAB 7 METHODS
 
 void BinarySearchTree::Inorder(Node* p) const {
+    if (p == root) { //checks if tree is empty
+        if (root == nullptr) {
+            cout << "\nCANNOT PRINT AN EMPTY TREE\n";
+        }
+        else {
+            cout << setw(SETW_SIZE) << "WORD" << "COUNT" << "\n\n";
+        }
+    }
     if (p != nullptr) {
         Inorder(p->leftLink);
         cout << setw(SETW_SIZE) << p->word << p->count << "\n";
@@ -436,7 +446,7 @@ void BinarySearchTree::deleteNode(const string& deleteItem, bool& found) {
         Node* trailCurrent;
         //bool found = false;
         if (root == nullptr)
-            cout << "Cannot delete from an empty tree.\n";
+            cout << "Cannot delete from an empty dictionary.\n";
         else {
             current = root;
             trailCurrent = root;
@@ -454,7 +464,7 @@ void BinarySearchTree::deleteNode(const string& deleteItem, bool& found) {
                 }
             }
             if (current == nullptr) {
-                cout << "The word you are trying to delete is not in the tree.\n";
+                cout << "The word you are trying to delete is not in the dictionary.\n";
             }
             else if (found) {
                 if (current == root) {
@@ -466,10 +476,10 @@ void BinarySearchTree::deleteNode(const string& deleteItem, bool& found) {
                 else {
                     deleteFromTree(trailCurrent->rightLink);
                 }
-                cout << "\"" << deleteItem << "\"" << " was deleted from the tree\n";
+                cout << "\"" << deleteItem << "\"" << " was deleted successfully\n";
             }
             else
-                cout << "The word you are trying to delete is not in the tree.\n";
+                cout << "The word you are trying to delete is not in the dictionary.\n";
         }
 }
 
@@ -618,6 +628,7 @@ void EnterSearchSubmenu(BinarySearchTree& BST) {
     cout << "Enter a word to search by: ";
     cin >> keyword;
     cout << "\n";
+    keyword = ToLower(keyword);
 
     BST.SearchTree(keyword, foundWords);
     if (!foundWords) {
@@ -625,12 +636,15 @@ void EnterSearchSubmenu(BinarySearchTree& BST) {
     }
 }
 
+
+//Deletes exact match
 void DeleteWordWrapper(BinarySearchTree& BST, string fileName) {
     string wordToDelete;
     bool wordFound = false;
     cout << "Enter a word you want to delete: ";
     cin >> wordToDelete;
     cout << "\n";
+    wordToDelete = ToLower(wordToDelete);
 
     BST.deleteNode(wordToDelete, wordFound);
     if (wordFound) {
