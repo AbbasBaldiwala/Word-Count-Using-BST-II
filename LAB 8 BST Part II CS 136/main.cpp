@@ -487,13 +487,14 @@ void BinarySearchTree::deleteNode(const string& deleteItem, bool& found) {
 
 string ProcessWord(string str) {
     string processedWord = "";
+    string apostrophes = "\'’‘";
     size_t strLen = str.length();
     for (int i = 0; i < strLen; i++) {
         char ch = str[i];
         if (((ch >= 'a') && (ch <= 'z'))) {
             processedWord += ch;
         }
-        else if (ch == '\'') { //skips everything after apostrophe
+        else if (apostrophes.find(ch) != std::string::npos) { //skips everything after apostrophe
             i = strLen;
         }
     }
